@@ -77,7 +77,7 @@ function init() {
 		asin = matched[1];
 	}
 
-	if (matched && (category_node = document.getElementsByClassName("navCatA")[0]) && (category_name = category_node.innerHTML) && (category_name == "本" || "洋書") && (link_container_node = document.getElementsByClassName("tafContainerDiv")[0])) {
+	if (matched && (category_node = document.getElementById("nav-subnav").children[0].children[0]) && (category_name = category_node.innerHTML.match(/\s*(\S+)\s*/)[1]) && (category_name == "本" || "洋書") && (link_container_node = document.getElementById("tafContainerDiv"))) {
 		setMenuCSS();
 		addBookmeterLink(link_container_node, asin);
 	}
