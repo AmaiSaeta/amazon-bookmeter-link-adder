@@ -19,6 +19,8 @@
 
 (function () {
 
+const link_id_name = "x_gmjct_ambmla";
+
 function openWindow(event) {
 	var link_uri;
 
@@ -32,14 +34,13 @@ function addBookmeterLink(target_node, asin) {
 	var anchor_node, image_node;
 
 	anchor_node = document.createElement("a");
-	anchor_node.id = "x_gmjct_ambmla";
+	anchor_node.id = link_id_name;
 	anchor_node.href = "http://book.akahoshitakuya.com/b/" + asin;
 	image_node = document.createElement("img");
 	image_node.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEX///8yryUQtpbhAAAAAXRSTlMAQObYZgAAABZJREFUCJljYAACORTEfA+BqlERAwMArlEK2MwTLvAAAAAASUVORK5CYII=";
 	image_node.setAttribute("width", "16");
 	image_node.setAttribute("height", "16");
 	image_node.setAttribute("alt", "読書メーター");
-	image_node.c;
 	anchor_node.appendChild(image_node);
 	anchor_node.addEventListener("click", openWindow, false);
 
@@ -48,8 +49,8 @@ function addBookmeterLink(target_node, asin) {
 
 function setMenuCSS() {
 	var css_str = [
-			"#x_gmjct_ambmla {margin: 0; padding: 0; border: 0;}",
-			"#x_gmjct_ambmla img {margin: 0; padding: 0; border: 0; vertical-align: bottom;}"
+			"#" + link_id_name + " {margin: 0; padding: 0; border: 0;}",
+			"#" + link_id_name + " img {margin: 0; padding: 0; border: 0; vertical-align: bottom;}"
 		].join("\n");
 	var style_node;
 
@@ -64,24 +65,53 @@ function setMenuCSS() {
 	}
 }
 
-function init() {
-	var link_container_node, category_node;
-	var matched;
-	var asin;
-	var category_name;
-
-	if (matched = location.pathname.match(/^\/(?:exec\/obidos\/ASIN|gp\/product)\/([a-z\d]{10})(?:\/|%3F|$)/i)) {
-		asin = matched[1];
-	}
-	else if (matched = location.pathname.match(/^\/(?:[^\/]+\/)?dp\/(?:[^\/]+\/)?([a-z\d]{10})(?:\/|%3F|$)/i)) {
-		asin = matched[1];
-	}
-
-	if (matched && (category_node = document.getElementById("nav-subnav").children[0].children[0]) && (category_name = category_node.innerHTML.match(/\s*(\S+)\s*/)[1]) && (category_name == "本" || "洋書") && (link_container_node = document.getElementById("tafContainerDiv"))) {
-		setMenuCSS();
-		addBookmeterLink(link_container_node, asin);
-	}
+function getTextContentOfElement(elem) {
+	return (elem.textContent || elem.innerText);
 }
 
-init();
+function trimSpace(str) {
+	return str.match(/^\s*(.*)\s*$/)[1];
+}
+
+function getAsin() {
+	var matched = location.pathname.match('^/(?:exec/obidos/ASIN|gp/product|(?:[^/]+/)?dp(?:/[^/]+)?)/([a-zA-Z\\d]{10})/');
+	return matched ? matched[1] : null;
+}
+
+function getCategoryName() {
+	var node = document.getElementsByClassName("nav-category-button")[0];
+	return trimSpace(getTextContentOfElement(node));
+}
+
+function getCategoryNames() {
+	var categoryNodesItr = document.evaluate(
+		'.//a[contains(concat(" ", normalize-space(@class), " "), " nav_a ")]/text()',
+		document.getElementById('nav_subcats_4'),
+		null,
+		XPathResult.ORDERED_NODE_ITERATOR_TYPE,
+		null
+	);
+	var categoryNames = [];
+	var node, name;
+
+	while(node = categoryNodesItr.iterateNext()) {
+		name = trimSpace(getTextContentOfElement(node));
+
+		// Unlike the actual category name only 'Kindleストア'.
+		if(name == 'Kindle本') name = 'Kindleストア';
+
+		categoryNames.push(name);
+	}
+	return categoryNames;
+}
+
+var link_container_node = document.getElementById("tafContainerDiv");
+var asin = getAsin();
+var category_name = getCategoryName();
+var category_names = getCategoryNames();
+
+if (asin && (category_names.indexOf(category_name) != -1) && link_container_node) {
+	setMenuCSS();
+	addBookmeterLink(link_container_node, asin);
+}
 })();
