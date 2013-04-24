@@ -8,6 +8,7 @@
 // @include		http://www.amazon.co.jp/*/dp/*
 // @include		http://www.amazon.co.jp/dp/*
 // @include		http://www.amazon.co.jp/gp/product/*
+// @include		http://www.amazon.co.jp/o/ASIN/*
 // ==/UserScript==
 
 (function () {
