@@ -67,8 +67,7 @@ function trimSpace(str) {
 }
 
 function getAsin() {
-	var matched = location.pathname.match('^/(?:exec/obidos/ASIN|gp/product|(?:[^/]+/)?dp(?:/[^/]+)?)/([a-zA-Z\\d]{10})/');
-	return matched ? matched[1] : null;
+	return document.getElementById('ASIN').getAttribute('value');
 }
 
 function getCategoryName() {
