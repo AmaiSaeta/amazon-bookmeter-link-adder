@@ -2,7 +2,7 @@
 // @name		Amazon.co.jp - Bookmeter Link Adder
 // @namespace		http://amaisaeta.seesaa.net/
 // @author		AmaiSaeta (original script author: Jankokutou)
-// @version		1.01.20130425
+// @version		1.02.20141109
 // @description		Amazon.co.jpの商品ページに読書メーターへのリンクを追加する。
 // @include		http://www.amazon.co.jp/exec/obidos/ASIN/*
 // @include		http://www.amazon.co.jp/*/dp/*
@@ -44,7 +44,7 @@ function addBookmeterLink(target_node, asin) {
 
 function setMenuCSS() {
 	var css_str = [
-			"#" + link_id_name + " {margin: 0; padding: 0; border: 0;}",
+			"#" + link_id_name + " {margin: 0; padding: 0; border: 0; display: inline-block;}",
 			"#" + link_id_name + " img {margin: 0; padding: 0; border: 0; vertical-align: bottom;}"
 		].join("\n");
 	var style_node;
@@ -60,51 +60,68 @@ function setMenuCSS() {
 	}
 }
 
-function getTextContentOfElement(elem) {
-	return (elem.textContent || elem.innerText);
-}
-
-function trimSpace(str) {
-	return str.match(/^\s*(.*)\s*$/)[1];
-}
-
 function getAsin() {
-	return document.getElementById('ASIN').getAttribute('value');
+	var f = function(name) {
+		var list = document.getElementsByName(name);
+		return (list.length == 0) ? null : list[0].getAttribute('value');
+	};
+
+	// 'ASIN' is contained the book page,
+	// 'ASIN.0' is contained the Kindle page.
+	var asin = f('ASIN') || f('ASIN.0');
+	return asin;
 }
 
-function getCategoryName() {
-	var node = document.getElementsByClassName("nav-category-button")[0];
-	return trimSpace(getTextContentOfElement(node));
+// [TODO] 名前微妙
+function generateXPathHasClass(className) {
+	return 'contains(concat(" ", normalize-space(@class), " "), " ' + className + ' ")';
 }
 
-function getCategoryNames() {
-	var categoryNodesItr = document.evaluate(
-		'.//a[contains(concat(" ", normalize-space(@class), " "), " nav_a ")]/text()',
-		document.getElementById('nav_subcats_4'),
-		null,
-		XPathResult.ORDERED_NODE_ITERATOR_TYPE,
+function getRootCategoryNames(document) {
+	const xpath = '//*[@id="SalesRank"]//*[' + generateXPathHasClass('zg_hrsr_ladder') + ']/a[1]';
+	var rankElems = document.evaluate(
+		xpath, document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
 		null
 	);
-	var categoryNames = [];
-	var node, name;
 
-	while(node = categoryNodesItr.iterateNext()) {
-		name = trimSpace(getTextContentOfElement(node));
-
-		// Unlike the actual category name only 'Kindleストア'.
-		if(name == 'Kindle本') name = 'Kindleストア';
-
-		categoryNames.push(name);
+	for(var results = [], i = 0; i < rankElems.snapshotLength; ++i) {
+		var ssItem = rankElems.snapshotItem(i);
+		var rootCategoryName = ssItem.textContent;
+		results.push(rootCategoryName);
 	}
-	return categoryNames;
+
+	console.log("Found categories", results);
+
+	return results;
 }
 
-var link_container_node = document.getElementById("tafContainerDiv");
-var asin = getAsin();
-var category_name = getCategoryName();
-var category_names = getCategoryNames();
+function isBookPage(document) {
+	var category_names = getRootCategoryNames(document);
+	const book_category_names = ['本', 'Kindleストア'];
 
-if (asin && (category_names.indexOf(category_name) != -1) && link_container_node) {
+	return category_names.some(
+		function(name) { return book_category_names.indexOf(name) != -1; }
+	);
+}
+
+function getShareInterfaceContainer(document) {
+	var f = document.getElementById.bind(document);
+	// 'tell-a-friend' is contained the book pages,
+	// 'tafContainerDiv' is contained the Kindle pages.
+	return f("tell-a-friend") || f("tafContainerDiv");
+}
+
+if (!isBookPage(document)) {
+	console.log("This page isn't for book.");
+	return;
+}
+
+var link_container_node = getShareInterfaceContainer(document);
+console.log('link_conteiner_node', !!link_container_node ? "found" : "not found");
+var asin = getAsin();
+console.log('asin: ' + asin);
+
+if (asin && link_container_node) {
 	setMenuCSS();
 	addBookmeterLink(link_container_node, asin);
 }
