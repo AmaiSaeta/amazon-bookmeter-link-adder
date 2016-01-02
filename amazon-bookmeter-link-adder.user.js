@@ -106,9 +106,9 @@ function isBookPage(document) {
 
 function getShareInterfaceContainer(document) {
 	var f = document.getElementById.bind(document);
-	// 'tell-a-friend' is contained the book pages,
+	// 'tell-a-friend-byline' is contained the book pages,
 	// 'tafContainerDiv' is contained the Kindle pages.
-	return f("tell-a-friend") || f("tafContainerDiv");
+	return f("tell-a-friend-byline") || f("tafContainerDiv");
 }
 
 if (!isBookPage(document)) {
