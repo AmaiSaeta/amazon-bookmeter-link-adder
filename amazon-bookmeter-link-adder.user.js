@@ -44,9 +44,9 @@ function addBookmeterLink(target_node, asin) {
 
 function setMenuCSS() {
 	var css_str = [
-			"#" + link_id_name + " {margin: 0; padding: 0; border: 0; display: inline-block;}",
-			"#" + link_id_name + " img {margin: 0; padding: 0; border: 0; vertical-align: bottom;}"
-		].join("\n");
+		"#" + link_id_name + " {margin: 0; padding: 0; border: 0; display: inline-block;}",
+		"#" + link_id_name + " img {margin: 0; padding: 0; border: 0; vertical-align: bottom;}"
+	].join("\n");
 	var style_node;
 
 	if (typeof GM_addStyle == typeof Function()) {
@@ -125,4 +125,5 @@ if (asin && link_container_node) {
 	setMenuCSS();
 	addBookmeterLink(link_container_node, asin);
 }
+
 })();
