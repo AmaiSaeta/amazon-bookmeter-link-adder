@@ -1,15 +1,15 @@
 // ==UserScript==
-// @name		Amazon.co.jp - Bookmeter Link Adder
-// @namespace		http://amaisaeta.seesaa.net/
-// @author		AmaiSaeta (original script author: Jankokutou)
-// @version		1.03.20160102
-// @description		Amazon.co.jpの商品ページに読書メーターへのリンクを追加する。
-// @include		http*://www.amazon.co.jp/exec/obidos/ASIN/*
-// @include		http*://www.amazon.co.jp/*/dp/*
-// @include		http*://www.amazon.co.jp/dp/*
-// @include		http*://www.amazon.co.jp/gp/product/*
-// @include		http*://www.amazon.co.jp/o/ASIN/*
-// @grant		GM_addStyle
+// @name        Amazon.co.jp - Bookmeter Link Adder
+// @namespace   http://amaisaeta.seesaa.net/
+// @author      AmaiSaeta (original script author: Jankokutou)
+// @version     1.03.20160102
+// @description Amazon.co.jpの商品ページに読書メーターへのリンクを追加する。
+// @include     http*://www.amazon.co.jp/exec/obidos/ASIN/*
+// @include     http*://www.amazon.co.jp/*/dp/*
+// @include     http*://www.amazon.co.jp/dp/*
+// @include     http*://www.amazon.co.jp/gp/product/*
+// @include     http*://www.amazon.co.jp/o/ASIN/*
+// @grant       GM_addStyle
 // ==/UserScript==
 
 (function () {
