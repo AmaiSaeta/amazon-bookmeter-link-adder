@@ -30,7 +30,8 @@ function addBookmeterLink(target_node, asin) {
 
 	anchor_node = document.createElement("a");
 	anchor_node.id = link_id_name;
-	anchor_node.href = "http://book.akahoshitakuya.com/b/" + asin;
+	// This URL is old style. Redirect to new style URL. I affraid that the redirection will not work...
+	anchor_node.href = "http://bookmeter.com/b/" + asin;
 	image_node = document.createElement("img");
 	image_node.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEX///8yryUQtpbhAAAAAXRSTlMAQObYZgAAABZJREFUCJljYAACORTEfA+BqlERAwMArlEK2MwTLvAAAAAASUVORK5CYII=";
 	image_node.setAttribute("width", "16");
