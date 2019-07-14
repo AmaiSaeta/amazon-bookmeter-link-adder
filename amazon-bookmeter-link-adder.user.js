@@ -2,7 +2,7 @@
 // @name        Amazon.co.jp - Bookmeter Link Adder
 // @namespace   http://amaisaeta.seesaa.net/
 // @author      AmaiSaeta (original script author: Jankokutou)
-// @version     1.04.20160925
+// @version     2.00.20190715
 // @description Amazon.co.jpの商品ページに読書メーターへのリンクを追加する。
 // @include     http*://www.amazon.co.jp/exec/obidos/ASIN/*
 // @include     http*://www.amazon.co.jp/*/dp/*
