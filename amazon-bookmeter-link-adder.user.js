@@ -77,31 +77,26 @@ function generateXPathHasClass(className) {
 	return 'contains(concat(" ", normalize-space(@class), " "), " ' + className + ' ")';
 }
 
-function getRootCategoryNames(document) {
-	const xpath = '//*[@id="SalesRank"]//*[' + generateXPathHasClass('zg_hrsr_ladder') + ']/a[1]';
-	var rankElems = document.evaluate(
-		xpath, document, null, XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+function getRootCategoryName(document) {
+	// Deem from the leftmost link of the sub navigation.
+
+	const xpath = '//*[@id="nav-subnav"]//*[' + generateXPathHasClass('nav-b') + ']';
+	const rootCategoryElem = document.evaluate(
+		xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE,
 		null
-	);
+	).singleNodeValue;
+	const rootCategoryName = rootCategoryElem === null ? null : rootCategoryElem.textContent.trim();
 
-	for(var results = [], i = 0; i < rankElems.snapshotLength; ++i) {
-		var ssItem = rankElems.snapshotItem(i);
-		var rootCategoryName = ssItem.textContent;
-		results.push(rootCategoryName);
-	}
+	console.log("Found category", rootCategoryName);
 
-	console.log("Found categories", results);
-
-	return results;
+	return rootCategoryName;
 }
 
 function isBookPage(document) {
-	var category_names = getRootCategoryNames(document);
-	const book_category_names = ['本', 'Kindleストア'];
+	const category_name = getRootCategoryName(document);
+	const book_category_names = ['本', 'Kindle本'];
 
-	return category_names.some(
-		function(name) { return book_category_names.indexOf(name) != -1; }
-	);
+	return book_category_names.some(name => name === category_name);
 }
 
 function getShareInterfaceContainer(document) {
